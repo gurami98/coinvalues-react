@@ -6,8 +6,7 @@ const StyledList = styled.ul`
   max-width: 1000px;
   margin: 0 auto;
   ${props => props.header && `
-        padding: 0;
-        padding-top: 50px;
+        padding: 50px 50px 0 50px;
       `    
   }
 `

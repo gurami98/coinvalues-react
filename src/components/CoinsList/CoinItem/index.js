@@ -1,10 +1,15 @@
 import React from 'react';
 import StyledListItem from "../../UIKITS/StyledListItem";
 import ListItemUL from "../../UIKITS/ListItemUL";
+import {useHistory} from "react-router-dom";
 
 const CoinsItem = ({coin, index}) => {
+    const history = useHistory()
+    const handleClick = () => {
+        history.push(`/currency/${coin.coinSymbol}`)
+    }
     return (
-        <StyledListItem key={index}>
+        <StyledListItem onClick={handleClick} coin={true} key={index}>
             <ListItemUL>
                 <li>
                     {coin.id}
