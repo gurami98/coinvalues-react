@@ -1,24 +1,36 @@
 import React, {useEffect, useState} from 'react';
 import * as coinSelectors from "../../selectors/coinSelectors";
-import {renderCoins, renderCurrentCoin} from "../../store/actionCreators";
+import {renderCoins, renderCurrentCoin, renderRefreshedCoins} from "../../store/actionCreators";
 import {connect} from "react-redux";
 import CoinsHeader from "../../components/CoinsHeader";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CoinsList from "../../components/CoinsList";
 import {getAllCoins} from "../../API/coinAPI";
 
-const AllCoins = ({coins, renderCoins, renderCurrentCoin}) => {
+const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins}) => {
     const [hasMore, setHasMore] = useState(true);
     useEffect(() => {
         fetchCoins()
         renderCurrentCoin({})
-        // const refreshCoins = setInterval(() => {
-        //     fetchCoins()
-        // }, 30000)
+        // const refreshCoinsTimer = setInterval(() => {
+        //     refreshCoins()
+        // }, 5000)
         // return () => {
-        //     clearInterval(refreshCoins)
+        //     clearInterval(refreshCoinsTimer)
         // }
     }, []);
+
+    const refreshCoins = async () => {
+        try{
+            const response = await getAllCoins();
+            const allCoins = response.data.data
+            const refreshedCoinBatch = allCoins.slice(0, 20)
+            renderRefreshedCoins(refreshedCoinBatch)
+            setHasMore(true)
+        }catch(e){
+            console.log(e)
+        }
+    }
 
     const fetchCoins = async () => {
         try {
@@ -55,6 +67,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     renderCoins,
+    renderRefreshedCoins,
     renderCurrentCoin
 }
 

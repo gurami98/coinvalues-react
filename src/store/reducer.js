@@ -20,6 +20,19 @@ const reducer = (state = initialState, action) => {
                         currentSupply: coin.total_supply
                     }
                 }))}
+        // FOR REFRESHING COINS
+        case actions.RENDER_REFRESHED_COINS:
+            return {...state, coins: action.payload.coins.map(coin => {
+                    return {
+                        id: coin.cmc_rank,
+                        coinName: coin.name,
+                        coinSymbol: coin.symbol,
+                        unitPrice: coin.quote.USD.price,
+                        change24HR: coin.quote.USD.percent_change_24h,
+                        maxSupply: coin.max_supply,
+                        currentSupply: coin.total_supply
+                    }
+                })}
         // FOR RENDERING CURRENT COIN PROFILE
         case actions.RENDER_CURRENT_COIN:
             return {...state, currentCoin: action.payload.coin}

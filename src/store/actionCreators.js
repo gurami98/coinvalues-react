@@ -9,6 +9,15 @@ export const renderCoins = (coins) => {
 	}
 }
 
+export const renderRefreshedCoins = (coins) => {
+	return{
+		type: actions.RENDER_REFRESHED_COINS,
+		payload: {
+			coins
+		}
+	}
+}
+
 export const renderCurrentCoin = (coin) => {
 	return {
 		type: actions.RENDER_CURRENT_COIN,
@@ -17,3 +26,4 @@ export const renderCurrentCoin = (coin) => {
 		}
 	}
 }
+

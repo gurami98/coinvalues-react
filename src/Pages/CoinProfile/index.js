@@ -46,6 +46,12 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
 
     useEffect(() => {
         fetchCurrentCoin()
+        const refreshCoin = setInterval(() => {
+            fetchCurrentCoin()
+        }, 30000)
+        return () => {
+            clearInterval(refreshCoin)
+        }
     }, [])
 
     const fetchCurrentCoin = async () => {
