@@ -9,6 +9,7 @@ import {getAllCoins} from "../../API/coinAPI";
 
 const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins}) => {
     const [hasMore, setHasMore] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('')
     useEffect(() => {
         fetchCoins()
         renderCurrentCoin({})
@@ -28,7 +29,7 @@ const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins})
             renderRefreshedCoins(refreshedCoinBatch)
             setHasMore(true)
         }catch(e){
-            console.log(e)
+            setErrorMessage(e.response.data)
         }
     }
 
@@ -40,21 +41,24 @@ const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins})
             const nextCoinBatch = allCoins.slice(coins.length, coins.length + 20)
             renderCoins(nextCoinBatch)
         }catch(e){
-            console.log(e)
+            setErrorMessage(e.response.data)
         }
     }
 
     return (
         <div>
             <CoinsHeader/>
-            <InfiniteScroll
-                dataLength={coins.length}
-                next={fetchCoins}
-                hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
-            >
-                <CoinsList/>
-            </InfiniteScroll>
+            {
+                errorMessage ? <h1>{errorMessage}</h1> :
+                <InfiniteScroll
+                    dataLength={coins.length}
+                    next={fetchCoins}
+                    hasMore={hasMore}
+                    loader={<h4>Loading...</h4>}
+                >
+                    <CoinsList/>
+                </InfiniteScroll>
+            }
         </div>
     );
 };
