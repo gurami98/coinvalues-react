@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import * as coinSelectors from "../../selectors/coinSelectors";
-import {renderCoins, renderCurrentCoin} from "../../store/actionCreators";
+import {renderCurrentCoin, resetAllCoinsArray} from "../../store/actionCreators";
 import {connect} from "react-redux";
 import {getAllCoins} from "../../API/coinAPI";
-import _ from "lodash";
 import styled from "styled-components";
 import {useHistory} from "react-router-dom";
 
@@ -40,13 +39,13 @@ const CoinProfileList = styled.ul`
   }
 `
 
-const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
-    const [coinArr, setCoinArr] = useState([])
+const CoinProfile = ({match, currentCoin, renderCurrentCoin, coinArrayToBeRendered, resetAllCoinsArray}) => {
     const symbol = match.params.symbol
     const history = useHistory()
 
     useEffect(() => {
         fetchCurrentCoin()
+        resetAllCoinsArray()
         // const refreshCoin = setInterval(() => {
         //     fetchCurrentCoin()
         // }, 30000)
@@ -61,39 +60,14 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
         const currentCoin = allCoins.filter(coin => {
             return coin.symbol === symbol
         })[0]
-        if(!currentCoin) {
-            renderCurrentCoin({name: 'No Coin With This Name'})
-        }
-        else {
-            renderCurrentCoin(currentCoin)
-            let keys = Object.keys(currentCoin)
-            let tempArr = []
-            for (let i = 0; i < keys.length; i++) {
-                const key = keys[i]
-                if (_.isObjectLike(currentCoin[key]) && !_.isArray(currentCoin[key])) {
-                    _.forIn(currentCoin[key]['USD'], function (value, key) {
-                        tempArr.push([key, value])
-                    });
-                } else tempArr.push([key, currentCoin[key]])
-            }
-            setCoinArr(tempArr)
-        }
+        if(!currentCoin) renderCurrentCoin({name: 'No Coin With This Name'})
+        else renderCurrentCoin(currentCoin)
     }
 
     const goHome = () => {
         history.push('/')
     }
 
-    let arrToBeRendered = coinArr.map((coin, index) => {
-        return (
-            <li key={index}>
-                {`${coin[0]}: `}
-                {
-                    _.isArray(coin[1]) ? `${coin[1].join(', ')}` : coin[1]
-                }
-            </li>
-        )
-    })
     return (
         <div>
             <CoinProfileHeader>
@@ -102,7 +76,7 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
             </CoinProfileHeader>
             <CoinProfileList>
                 {
-                    arrToBeRendered
+                    coinArrayToBeRendered
                 }
             </CoinProfileList>
         </div>
@@ -111,14 +85,14 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
 
 const mapStateToProps = (state) => {
     return {
-        coins: coinSelectors.getCoins(state),
-        currentCoin: coinSelectors.getCurrentCoin(state)
+        currentCoin: coinSelectors.getCurrentCoin(state),
+        coinArrayToBeRendered: coinSelectors.getCoinArrayToBeRendered(state)
     }
 }
 
 const mapDispatchToProps = {
-    renderCoins,
-    renderCurrentCoin
+    renderCurrentCoin,
+    resetAllCoinsArray
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoinProfile);

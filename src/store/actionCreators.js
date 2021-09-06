@@ -1,5 +1,11 @@
 import * as actions from "./actionTypes";
 
+export const resetAllCoinsArray = () => {
+	return {
+		type: actions.RESET_COINS
+	}
+}
+
 export const renderCoins = (coins) => {
 	return {
 		type: actions.RENDER_COINS,

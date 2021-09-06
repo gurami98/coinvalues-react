@@ -33,6 +33,9 @@ const reducer = (state = initialState, action) => {
                         currentSupply: coin.total_supply
                     }
                 })}
+        // FOR RESETTING COINS
+        case actions.RESET_COINS:
+            return {...state, coins: []}
         // FOR RENDERING CURRENT COIN PROFILE
         case actions.RENDER_CURRENT_COIN:
             return {...state, currentCoin: action.payload.coin}
