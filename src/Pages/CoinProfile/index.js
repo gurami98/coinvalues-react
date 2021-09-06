@@ -11,6 +11,7 @@ const CoinProfileHeader = styled.div`
   text-align: left;
   & h1{
     margin-top: 0;
+    margin-bottom: 0;
     text-align: center;
   }
   
@@ -46,12 +47,12 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
 
     useEffect(() => {
         fetchCurrentCoin()
-        const refreshCoin = setInterval(() => {
-            fetchCurrentCoin()
-        }, 30000)
-        return () => {
-            clearInterval(refreshCoin)
-        }
+        // const refreshCoin = setInterval(() => {
+        //     fetchCurrentCoin()
+        // }, 30000)
+        // return () => {
+        //     clearInterval(refreshCoin)
+        // }
     }, [])
 
     const fetchCurrentCoin = async () => {
@@ -60,19 +61,23 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin}) => {
         const currentCoin = allCoins.filter(coin => {
             return coin.symbol === symbol
         })[0]
-        renderCurrentCoin(currentCoin)
-        let keys = Object.keys(currentCoin)
-        let tempArr = []
-        for (let i = 0; i < keys.length; i++){
-            const key = keys[i]
-            if(_.isObjectLike(currentCoin[key]) && !_.isArray(currentCoin[key])) {
-                _.forIn(currentCoin[key]['USD'], function (value, key) {
-                    tempArr.push([key, value])
-                });
-            }
-            else tempArr.push([key, currentCoin[key]])
+        if(!currentCoin) {
+            renderCurrentCoin({name: 'No Coin With This Name'})
         }
-        setCoinArr(tempArr)
+        else {
+            renderCurrentCoin(currentCoin)
+            let keys = Object.keys(currentCoin)
+            let tempArr = []
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i]
+                if (_.isObjectLike(currentCoin[key]) && !_.isArray(currentCoin[key])) {
+                    _.forIn(currentCoin[key]['USD'], function (value, key) {
+                        tempArr.push([key, value])
+                    });
+                } else tempArr.push([key, currentCoin[key]])
+            }
+            setCoinArr(tempArr)
+        }
     }
 
     const goHome = () => {
