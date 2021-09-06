@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import * as coinSelectors from "../../selectors/coinSelectors";
 import {renderCurrentCoin, resetAllCoinsArray} from "../../store/actionCreators";
 import {connect} from "react-redux";
@@ -40,6 +40,7 @@ const CoinProfileList = styled.ul`
 `
 
 const CoinProfile = ({match, currentCoin, renderCurrentCoin, coinArrayToBeRendered, resetAllCoinsArray}) => {
+    const [loading, setLoading] = useState(true)
     const symbol = match.params.symbol
     const history = useHistory()
 
@@ -62,6 +63,7 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin, coinArrayToBeRender
         })[0]
         if(!currentCoin) renderCurrentCoin({name: 'No Coin With This Name'})
         else renderCurrentCoin(currentCoin)
+        setLoading(false)
     }
 
     const goHome = () => {
@@ -71,7 +73,7 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin, coinArrayToBeRender
     return (
         <div>
             <CoinProfileHeader>
-                <h1>{currentCoin.name}</h1>
+                <h1>{loading ? 'Loading...' : currentCoin.name}</h1>
                 <button onClick={goHome}>Main Page</button>
             </CoinProfileHeader>
             <CoinProfileList>
