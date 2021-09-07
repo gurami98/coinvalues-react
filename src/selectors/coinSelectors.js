@@ -2,8 +2,10 @@ import { createSelector } from 'reselect'
 import _ from "lodash";
 import React from "react";
 
-export const getCoins = (state) => state.coins
+export const getAllCoins = (state) => state.allCoins
+export const getVisibleCoinsCount = (state) => state.visibleCoinsCount
 export const getCurrentCoin = (state) => state.currentCoin
+export const getErrorMessage = (state) => state.error
 
 export const getCurrentCoinKeyValueArray = createSelector(
     getCurrentCoin,

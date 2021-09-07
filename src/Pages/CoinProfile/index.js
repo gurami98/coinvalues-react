@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import * as coinSelectors from "../../selectors/coinSelectors";
-import {renderCurrentCoin, resetAllCoinsArray} from "../../store/actionCreators";
+import {
+    renderCurrentCoin,
+    renderCurrentCoinAsync,
+    resetAllCoinsArray
+} from "../../store/actionCreators";
 import {connect} from "react-redux";
-import {getAllCoins} from "../../API/coinAPI";
 import styled from "styled-components";
 import {useHistory} from "react-router-dom";
 
@@ -39,32 +42,30 @@ const CoinProfileList = styled.ul`
   }
 `
 
-const CoinProfile = ({match, currentCoin, renderCurrentCoin, coinArrayToBeRendered, resetAllCoinsArray}) => {
+const CoinProfile = ({match, currentCoin, renderCurrentCoin, allCoins, renderCurrentCoinAsync, coinArrayToBeRendered, resetAllCoinsArray}) => {
     const [loading, setLoading] = useState(true)
     const symbol = match.params.symbol
     const history = useHistory()
 
     useEffect(() => {
-        fetchCurrentCoin()
+        renderCurrentCoinAsync()
         resetAllCoinsArray()
-        // const refreshCoin = setInterval(() => {
-        //     fetchCurrentCoin()
-        // }, 30000)
-        // return () => {
-        //     clearInterval(refreshCoin)
-        // }
+        setLoading(false)
+        const refreshCoin = setInterval(() => {
+            renderCurrentCoinAsync()
+        }, 5000)
+        return () => {
+            clearInterval(refreshCoin)
+        }
     }, [])
 
-    const fetchCurrentCoin = async () => {
-        const response = await getAllCoins();
-        const allCoins = response.data.data
+    useEffect(() => {
         const currentCoin = allCoins.filter(coin => {
             return coin.symbol === symbol
         })[0]
         if(!currentCoin) renderCurrentCoin({name: 'No Coin With This Name'})
         else renderCurrentCoin(currentCoin)
-        setLoading(false)
-    }
+    }, [allCoins])
 
     const goHome = () => {
         history.push('/')
@@ -87,6 +88,7 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin, coinArrayToBeRender
 
 const mapStateToProps = (state) => {
     return {
+        allCoins: coinSelectors.getAllCoins(state),
         currentCoin: coinSelectors.getCurrentCoin(state),
         coinArrayToBeRendered: coinSelectors.getCoinArrayToBeRendered(state)
     }
@@ -94,7 +96,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     renderCurrentCoin,
-    resetAllCoinsArray
+    resetAllCoinsArray,
+    renderCurrentCoinAsync
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoinProfile);

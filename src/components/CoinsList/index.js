@@ -4,11 +4,11 @@ import * as coinSelectors from "../../selectors/coinSelectors";
 import {connect} from "react-redux";
 import StyledList from "../UIKITS/StyledList";
 
-const CoinsList = ({coins}) => {
+const CoinsList = ({visibleCoinsCount, coins}) => {
     return (
         <StyledList>
             {
-                coins.map(coin => {
+                coins.slice(0, visibleCoinsCount).map(coin => {
                     return (
                         <CoinsItem coin={coin} index={coin.id} key={coin.id}/>
                     )
@@ -20,7 +20,8 @@ const CoinsList = ({coins}) => {
 
 const mapStateToProps = (state) => {
     return {
-        coins: coinSelectors.getCoins(state)
+        coins: coinSelectors.getAllCoins(state),
+        visibleCoinsCount: coinSelectors.getVisibleCoinsCount(state)
     }
 }
 

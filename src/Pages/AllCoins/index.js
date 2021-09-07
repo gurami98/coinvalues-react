@@ -1,48 +1,32 @@
 import React, {useEffect, useState} from 'react';
 import * as coinSelectors from "../../selectors/coinSelectors";
-import {renderCoins, renderCurrentCoin, renderRefreshedCoins} from "../../store/actionCreators";
+import {
+    renderCoinsAsync,
+    renderCurrentCoin, renderMoreVisibleCoins
+} from "../../store/actionCreators";
 import {connect} from "react-redux";
 import CoinsHeader from "../../components/CoinsHeader";
 import InfiniteScroll from "react-infinite-scroll-component";
-import CoinsList from "../../components/CoinsList";
-import {getAllCoins} from "../../API/coinAPI";
+import CoinsList from "../../components/CoinsList"
 
-const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins}) => {
+const AllCoins = ({renderCoinsAsync, visibleCoinsCount, renderMoreVisibleCoins, renderCurrentCoin, errorMessage}) => {
     const [hasMore, setHasMore] = useState(true);
-    const [errorMessage, setErrorMessage] = useState('')
+
     useEffect(() => {
-        fetchCoins()
+        renderCoinsAsync()
         renderCurrentCoin({})
-        // const refreshCoinsTimer = setInterval(() => {
-        //     refreshCoins()
-        // }, 5000)
-        // return () => {
-        //     clearInterval(refreshCoinsTimer)
-        // }
+        showMoreCoins()
+        const refreshCoinsTimer = setInterval ( () => {
+            renderCoinsAsync()
+        }, 5000)
+        return () => {
+            clearInterval(refreshCoinsTimer)
+        }
     }, []);
 
-    const refreshCoins = async () => {
-        try{
-            const response = await getAllCoins();
-            const allCoins = response.data.data
-            const refreshedCoinBatch = allCoins.slice(0, 20)
-            renderRefreshedCoins(refreshedCoinBatch)
-            setHasMore(true)
-        }catch(e){
-            setErrorMessage(e.response.data)
-        }
-    }
-
-    const fetchCoins = async () => {
-        try {
-            const response = await getAllCoins();
-            const allCoins = response.data.data
-            if (coins.length >= allCoins.length) setHasMore(false)
-            const nextCoinBatch = allCoins.slice(coins.length, coins.length + 20)
-            renderCoins(nextCoinBatch)
-        }catch(e){
-            setErrorMessage(e.response.data)
-        }
+    const showMoreCoins = () => {
+        if (visibleCoinsCount >= 100) setHasMore(false)
+        else renderMoreVisibleCoins()
     }
 
     return (
@@ -51,8 +35,8 @@ const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins})
             {
                 errorMessage ? <h1>{errorMessage}</h1> :
                 <InfiniteScroll
-                    dataLength={coins.length}
-                    next={fetchCoins}
+                    dataLength={visibleCoinsCount}
+                    next={showMoreCoins}
                     hasMore={hasMore}
                     loader={<h4>Loading...</h4>}
                 >
@@ -65,13 +49,15 @@ const AllCoins = ({coins, renderCoins, renderCurrentCoin, renderRefreshedCoins})
 
 const mapStateToProps = (state) => {
     return {
-        coins: coinSelectors.getCoins(state)
+        allCoins: coinSelectors.getAllCoins(state),
+        visibleCoinsCount: coinSelectors.getVisibleCoinsCount(state),
+        errorMessage: coinSelectors.getErrorMessage(state)
     }
 }
 
 const mapDispatchToProps = {
-    renderCoins,
-    renderRefreshedCoins,
+    renderCoinsAsync,
+    renderMoreVisibleCoins,
     renderCurrentCoin
 }
 
