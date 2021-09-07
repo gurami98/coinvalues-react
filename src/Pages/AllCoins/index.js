@@ -18,7 +18,7 @@ const AllCoins = ({renderCoinsAsync, visibleCoinsCount, renderMoreVisibleCoins, 
         showMoreCoins()
         const refreshCoinsTimer = setInterval ( () => {
             renderCoinsAsync()
-        }, 5000)
+        }, 30000)
         return () => {
             clearInterval(refreshCoinsTimer)
         }

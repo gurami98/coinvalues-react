@@ -53,7 +53,7 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoin, allCoins, renderCur
         setLoading(false)
         const refreshCoin = setInterval(() => {
             renderCurrentCoinAsync()
-        }, 5000)
+        }, 30000)
         return () => {
             clearInterval(refreshCoin)
         }
