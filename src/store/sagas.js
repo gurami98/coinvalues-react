@@ -6,7 +6,7 @@ import {renderAllCoins, renderAllCoinsWithKeys, renderError} from "./actionCreat
 function* fetchCoinsAsync() {
     try {
         const response = yield call(getAllCoins)
-        const allCoins = response.data.data
+        const allCoins = response.body.data
         yield put(renderAllCoins(allCoins))
     }
     catch(error) {
@@ -17,7 +17,7 @@ function* fetchCoinsAsync() {
 function* fetchCurrentCoinAsync() {
     try {
         const response = yield call(getAllCoins)
-        const allCoins = response.data.data
+        const allCoins = response.body.data
         yield put(renderAllCoinsWithKeys(allCoins))
     }
     catch(error) {

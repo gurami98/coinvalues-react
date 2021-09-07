@@ -1,4 +1,4 @@
-import axios from "axios";
+import superagent from "superagent"
 const API = 'http://localhost:3003'
 
-export const getAllCoins = () => axios.get(`${API}/coin/get-all`)
+export const getAllCoins = () => superagent.get(`${API}/coin/get-all`)
