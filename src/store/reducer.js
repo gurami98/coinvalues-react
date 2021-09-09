@@ -9,9 +9,6 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        // FOR RENDERING ALL COINS WITH EVERY KEY
-        case actions.RENDER_ALL_COINS_WITH_KEYS:
-            return {...state, allCoins: action.payload.coins}
         // FOR RENDERING ALL COINS
         case actions.RENDER_ALL_COINS:
             return {...state, allCoins: action.payload.coins.map(coin => {
@@ -30,7 +27,7 @@ const reducer = (state = initialState, action) => {
             return {...state, visibleCoinsCount: state.visibleCoinsCount + 20}
         // FOR RESETTING COINS
         case actions.RESET_COINS:
-            return {...state, visibleCoinsCount: 0}
+            return {...state, visibleCoinsCount: 0, allCoins: []}
         // FOR RENDERING CURRENT COIN PROFILE
         case actions.RENDER_CURRENT_COIN:
             return {...state, currentCoin: action.payload.coin}

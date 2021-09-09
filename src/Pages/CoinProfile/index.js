@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import * as coinSelectors from "../../selectors/coinSelectors";
 import {
-    renderCurrentCoin,
     renderCurrentCoinAsync,
     resetAllCoinsArray
 } from "../../store/actionCreators";
@@ -42,30 +41,22 @@ const CoinProfileList = styled.ul`
   }
 `
 
-const CoinProfile = ({match, currentCoin, renderCurrentCoin, allCoins, renderCurrentCoinAsync, coinArrayToBeRendered, resetAllCoinsArray}) => {
+const CoinProfile = ({match, currentCoin, renderCurrentCoinAsync, coinArrayToBeRendered, resetAllCoinsArray}) => {
     const [loading, setLoading] = useState(true)
     const symbol = match.params.symbol
     const history = useHistory()
 
     useEffect(() => {
-        renderCurrentCoinAsync()
+        renderCurrentCoinAsync(symbol)
         resetAllCoinsArray()
         setLoading(false)
         const refreshCoin = setInterval(() => {
-            renderCurrentCoinAsync()
+            renderCurrentCoinAsync(symbol)
         }, 30000)
         return () => {
             clearInterval(refreshCoin)
         }
     }, [])
-
-    useEffect(() => {
-        const currentCoin = allCoins.filter(coin => {
-            return coin.symbol === symbol
-        })[0]
-        if(!currentCoin) renderCurrentCoin({name: 'No Coin With This Name'})
-        else renderCurrentCoin(currentCoin)
-    }, [allCoins])
 
     const goHome = () => {
         history.push('/')
@@ -95,7 +86,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    renderCurrentCoin,
     resetAllCoinsArray,
     renderCurrentCoinAsync
 }

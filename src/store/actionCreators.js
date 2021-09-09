@@ -12,15 +12,6 @@ export const renderCoinsAsync = () => {
 	}
 }
 
-export const renderAllCoinsWithKeys = (coins) => {
-	return {
-		type: actions.RENDER_ALL_COINS_WITH_KEYS,
-		payload: {
-			coins
-		}
-	}
-}
-
 export const renderAllCoins = (coins) => {
 	return {
 		type: actions.RENDER_ALL_COINS,
@@ -39,9 +30,12 @@ export const renderError = (error) => {
 	}
 }
 
-export const renderCurrentCoinAsync = () => {
+export const renderCurrentCoinAsync = (symbol) => {
 	return {
-		type: actions.RENDER_CURRENT_COIN_ASYNC
+		type: actions.RENDER_CURRENT_COIN_ASYNC,
+		payload: {
+			symbol
+		}
 	}
 }
 

@@ -1,7 +1,7 @@
 import { put, takeEvery, call, all } from 'redux-saga/effects'
 import * as actions from "./actionTypes";
-import {getAllCoins} from "../API/coinAPI";
-import {renderAllCoins, renderAllCoinsWithKeys, renderError} from "./actionCreators";
+import {getAllCoins, getCurrentCoin} from "../API/coinAPI";
+import {renderAllCoins, renderCurrentCoin, renderError} from "./actionCreators";
 
 function* fetchCoinsAsync() {
     try {
@@ -14,13 +14,14 @@ function* fetchCoinsAsync() {
     }
 }
 
-function* fetchCurrentCoinAsync() {
+function* fetchCurrentCoinAsync(action) {
+    const symbol = action.payload.symbol
     try {
-        const response = yield call(getAllCoins)
-        const allCoins = response.body.data
-        yield put(renderAllCoinsWithKeys(allCoins))
-    }
-    catch(error) {
+        const response = yield call(getCurrentCoin, symbol)
+        const current = response.body.data
+        const key = Object.keys(current)[0]
+        yield put(renderCurrentCoin(current[key]))
+    } catch (error) {
         yield put(renderError(error.response.data))
     }
 }
