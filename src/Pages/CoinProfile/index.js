@@ -41,7 +41,7 @@ const CoinProfileList = styled.ul`
   }
 `
 
-const CoinProfile = ({match, currentCoin, renderCurrentCoinAsync, coinArrayToBeRendered, resetAllCoinsArray}) => {
+const CoinProfile = ({match, currentCoin, error, renderCurrentCoinAsync, coinArrayToBeRendered, resetAllCoinsArray}) => {
     const [loading, setLoading] = useState(true)
     const symbol = match.params.symbol
     const history = useHistory()
@@ -68,11 +68,15 @@ const CoinProfile = ({match, currentCoin, renderCurrentCoinAsync, coinArrayToBeR
                 <h1>{loading ? 'Loading...' : currentCoin.name}</h1>
                 <button onClick={goHome}>Main Page</button>
             </CoinProfileHeader>
-            <CoinProfileList>
-                {
-                    coinArrayToBeRendered
-                }
-            </CoinProfileList>
+            {
+                !error ?
+                <CoinProfileList>
+                    {
+                        coinArrayToBeRendered
+                    }
+                </CoinProfileList>
+                    : <h1>{error}</h1>
+            }
         </div>
     );
 };
@@ -81,6 +85,7 @@ const mapStateToProps = (state) => {
     return {
         allCoins: coinSelectors.getAllCoins(state),
         currentCoin: coinSelectors.getCurrentCoin(state),
+        error: coinSelectors.getErrorMessage(state),
         coinArrayToBeRendered: coinSelectors.getCoinArrayToBeRendered(state)
     }
 }

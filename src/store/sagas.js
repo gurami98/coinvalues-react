@@ -10,7 +10,7 @@ function* fetchCoinsAsync() {
         yield put(renderAllCoins(allCoins))
     }
     catch(error) {
-        yield put(renderError(error.response.data))
+        yield put(renderError('Failed to fetch coins'))
     }
 }
 
@@ -22,7 +22,7 @@ function* fetchCurrentCoinAsync(action) {
         const key = Object.keys(current)[0]
         yield put(renderCurrentCoin(current[key]))
     } catch (error) {
-        yield put(renderError(error.response.data))
+        yield put(renderError('No coin with this name'))
     }
 }
 
