@@ -19,7 +19,7 @@ const AllCoins = ({renderCoinsAsync, renderError, visibleCoinsCount, renderMoreV
         showMoreCoins()
         const refreshCoinsTimer = setInterval ( () => {
             renderCoinsAsync()
-        }, 30000)
+        }, 1800000) // refresh every 30min, can be reduced just for testing purposes
         return () => {
             clearInterval(refreshCoinsTimer)
         }

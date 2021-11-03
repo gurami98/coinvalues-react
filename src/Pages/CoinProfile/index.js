@@ -52,7 +52,7 @@ const CoinProfile = ({match, currentCoin, error, renderCurrentCoinAsync, coinArr
         setLoading(false)
         const refreshCoin = setInterval(() => {
             renderCurrentCoinAsync(symbol)
-        }, 30000)
+        }, 1800000) // refresh every 30min, can be reduced just for testing purposes
         return () => {
             clearInterval(refreshCoin)
         }
